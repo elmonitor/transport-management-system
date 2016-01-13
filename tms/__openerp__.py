@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
-#    
+#
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2012 HESATEC (<http://www.hesatecnica.com>).
 #
@@ -15,24 +15,28 @@
 #    GNU Affero General Public License for more details.
 #
 #    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.     
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
 
-{   
-    "name"        : "Freight Management",
-    "version"     : "1.0",
-    "category"    : "Vertical",
-    'complexity'  : "normal",
-    "author"      : "HESATEC",
-    "website"     : "http://www.hesatecnica.com",
-    "depends"     : ["hr", "account_voucher", "purchase","sale", "fleet"],
-    "summary"     : "Management System for Carriers, Trucking companies and other freight companies",
-    "description" : """
+{
+    "name": "Freight Management",
+    "version": "1.0",
+    "category": "Vertical",
+    'complexity': "normal",
+    "author": "HESATEC",
+    "website": "http://www.hesatecnica.com",
+    "depends": ["hr", "account_voucher", "purchase", "sale", "fleet"],
+    "summary":
+        "Management System for Carriers, Trucking companies and \
+        other freight companies",
+    "description": """
 Freight Management System
 ==========================
 
-This application allows you to manage Truckload Freights and Less-than-truckload freight. It also can help Companies such as owner-operators, carriers, brokers and shippers.
+This application allows you to manage Truckload Freights and
+Less-than-truckload freight. It also can help Companies such as
+owner-operators, carriers, brokers and shippers.
 
 It handles full Travel workflow:
 
@@ -47,7 +51,7 @@ Managing:
 It also can manage:
 - Trucks Red Tapes
 - Truck Odometers
-- Events during travel (Example: Arrival delay, Missing Cargo, etc)
+- Events during travel (Example: Arrival delay, Missing Cargo, etc
 - Kits
 - Places (Linked with Google Maps)
 - Routes (Visible in Google Maps)
@@ -56,7 +60,7 @@ It also can manage:
 
 """,
 
-    "data" : [
+    "data": [
         'security/tms_security.xml',
         'security/ir.model.access.csv',
         'product_view.xml',
@@ -76,7 +80,7 @@ It also can manage:
         'tms_history_view.xml',
         'tms_operation_view.xml',
         'tms_expense_loan_view.xml',
-        ],
+    ],
     "application": True,
     "installable": True
 }
