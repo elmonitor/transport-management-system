@@ -6,7 +6,7 @@
 TMS.travel
 ##############################
 -->
-<!-- SEARCH View for tms.travel  --> 
+<!-- SEARCH View for tms.travel  -->
         <record id="view_tms_travel_search" model="ir.ui.view">
             <field name="name">tms.travel.search</field>
             <field name="model">tms.travel</field>

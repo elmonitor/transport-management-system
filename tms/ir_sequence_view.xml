@@ -18,7 +18,7 @@
 							<field name="shop_id" attrs="{'required':[('tms_waybill_sequence','=',True)]}" domain="[('company_id','=', company_id)]"/>
 						</group>
 					</page>
-			    </notebook> 
+			    </notebook>
             </field>
         </record>
 

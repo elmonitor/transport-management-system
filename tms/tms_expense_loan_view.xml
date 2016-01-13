@@ -21,7 +21,7 @@ tms.expense.loan
                     <field name="date"/>
                     <field name="employee_id"/>
                     <field name="product_id"/>
-                    <!--<field name="description"/> 
+                    <!--<field name="description"/>
                     <field name="origin"/> -->
                     <field name="amount" sum="Amount"/>
                     <field name="balance" sum="Balance"/>                    

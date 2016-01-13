@@ -6,7 +6,7 @@
 TMS.FUELVOUCHER
 ##############################
 -->
-<!-- SEARCH View for tms.fuelvoucher  --> 
+<!-- SEARCH View for tms.fuelvoucher  -->
         <record id="view_tms_fuelvoucher_search" model="ir.ui.view">
             <field name="name">tms.fuelvoucher.search</field>
             <field name="model">tms.fuelvoucher</field>

@@ -36,7 +36,7 @@
 						    <field name="tms_house_rent_discount_perc" />
 						    <field name="tms_house_rent_prod_id" />
 						    <field name="tms_alimony" />
-                            <field name="tms_alimony_prod_id" />                            
+                            <field name="tms_alimony_prod_id" />
 						    <field name="tms_credit_charge_discount" />
 						    <field name="tms_credit_charge_prod_id" />
                         </group>

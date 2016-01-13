@@ -16,7 +16,7 @@
             parent="menu_tms_config_customers" groups="base.group_no_one"/>
         <menuitem id="menu_tms_account_customer" name="Customers"
             parent="menu_tms_config_customers"
-            action="base.action_partner_customer_form" sequence="15"/>    
+            action="base.action_partner_customer_form" sequence="15"/>
     
     
         <menuitem id="menu_tms_config_suppliers" name="Suppliers" parent="menu_tms_config" sequence="2"/>

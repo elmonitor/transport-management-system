@@ -6,7 +6,7 @@
 TMS.EVENT.CATEGORY 
 ##############################
 -->
-<!-- TREE View for tms.event.category --> 
+<!-- TREE View for tms.event.category -->
 	<record model="ir.ui.view" id="view_tms_event_category_tree">
         <field name="name">tms.event.category.tree</field>
         <field name="model">tms.event.category</field>

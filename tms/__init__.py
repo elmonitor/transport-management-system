@@ -42,4 +42,3 @@ import stock
 import tms_expense_loan
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
-

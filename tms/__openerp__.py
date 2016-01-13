@@ -57,7 +57,6 @@ It also can manage:
 - Routes (Visible in Google Maps)
 - Easy integration with GPS System
 
-
 """,
 
     "data": [

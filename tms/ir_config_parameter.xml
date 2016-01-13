@@ -4,7 +4,7 @@
 
 
 	<!-- Vehicle update distance parameter -->
-	<record model="ir.config_parameter" id="tms_property_update_vehicle_distance">               
+	<record model="ir.config_parameter" id="tms_property_update_vehicle_distance">
       <field name="key">tms_property_update_vehicle_distance</field> 
       <field name="value">2
   1- Update distance from Travels

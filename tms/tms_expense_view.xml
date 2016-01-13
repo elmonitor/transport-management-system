@@ -8,7 +8,7 @@
 	<field name="name">Create copy from Waybill on Cancell</field>
 	<field name="model">tms.expense.cancel</field>
 	<field name="arch" type="xml">
-	<form string="Cancel" version="7.0">  
+	<form string="Cancel" version="7.0">
         <separator colspan="4" string="Cancel this Expense Record ?" />
         <footer>
             <button name="action_cancel" string="Confirm Cancellation" colspan="1" type="object" icon="gtk-ok" groups="tms.group_expense_cancel"/>

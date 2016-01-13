@@ -6,7 +6,7 @@
 TMS.Operation
 ##############################
 -->
-<!-- SEARCH View for tms.operation  --> 
+<!-- SEARCH View for tms.operation  -->
     <record id="view_tms_operation_search" model="ir.ui.view">
         <field name="name">tms.operation.search</field>
         <field name="model">tms.operation</field>

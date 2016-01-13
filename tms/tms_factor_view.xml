@@ -10,11 +10,10 @@ TMS.FACTOR
         <record id="view_tms_factor_tree" model="ir.ui.view">
           <field name="name">tms.factor.tree</field>
           <field name="model">tms.factor</field>
-        
           <field name="priority">2</field>
           <field name="arch" type="xml">
 	        <tree string="Billing Factors">
-	          <field name="category" invisible="1" /> 
+	          <field name="category" invisible="1" />
 	          <field name="name" />
 	          <field name="factor_type" />
 	          <field name="factor" />

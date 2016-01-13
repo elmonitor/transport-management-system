@@ -6,7 +6,7 @@
 TMS.ADVANCE
 ##############################
 -->
-<!-- SEARCH View for tms.advance  --> 
+<!-- SEARCH View for tms.advance  -->
     <record id="view_tms_advance_search" model="ir.ui.view">
       <field name="name">tms.advance.search</field>
       <field name="model">tms.advance</field>

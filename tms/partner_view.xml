@@ -16,7 +16,6 @@
                         <field name="tms_fuel_internal" attrs="{'invisible':[('tms_category','!=','fuel')]}" />
                         <field name="tms_warehouse_id"  
                                attrs="{'required':[('tms_fuel_internal','=',True)],'invisible':[('tms_fuel_internal','=',False)]}" />
-                        
                     </group>
                 </div>
             </field>
