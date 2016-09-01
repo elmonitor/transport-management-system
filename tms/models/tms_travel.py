@@ -36,7 +36,7 @@ class TmsTravel(models.Model):
         # compute=_travel_duration,
         string='Duration Real', help="Travel Real duration in hours")
     distance_route = fields.Float(
-        # compute=_route_data,
+        related="route_id.distance",
         string='Route Distance (mi./km)')
     fuel_efficiency_expected = fields.Float(
         # compute=_route_data,
@@ -73,13 +73,15 @@ class TmsTravel(models.Model):
     date_end_real = fields.Datetime(
         'End Real')
     distance_driver = fields.Float(
-        'Distance traveled by driver (mi./km)')
+        'Distance traveled by driver (mi./km)',
+        compute='_compute_distance_driver',
+        store=True)
     distance_loaded = fields.Float(
         'Distance Loaded (mi./km)')
     distance_empty = fields.Float(
         'Distance Empty (mi./km)')
-    distance_extraction = fields.Float(
-        'Distance Extraction (mi./km)')
+    odometer = fields.Float(
+        'Unit Odometer (mi./km)', readonly=True)
     fuel_efficiency_travel = fields.Float(
         'Fuel Efficiency Travel')
     fuel_efficiency_extraction = fields.Float(
@@ -107,7 +109,7 @@ class TmsTravel(models.Model):
     is_available = fields.Boolean(
         compute='_is_available',
         string='Travel available')
-    base_id = fields.Many2one('tms.base', 'Base')
+    base_id = fields.Many2one('tms.base', string='Base', required=True)
 
     @api.onchange('kit_id')
     def _onchange_kit(self):
@@ -119,7 +121,16 @@ class TmsTravel(models.Model):
 
     @api.onchange('route_id')
     def _onchange_route(self):
-        self.driver_factor_ids = self.route_id.driver_factor_ids
+        for rec in self:
+            rec.driver_factor_ids = rec.route_id.driver_factor_ids
+            rec.distance_route = rec.route_id.distance
+            rec.distance_loaded = rec.route_id.distance_loaded
+            rec.distance_empty = rec.route_id.distance_empty
+
+    @api.depends('distance_empty', 'distance_loaded')
+    def _compute_distance_driver(self):
+        for rec in self:
+            rec.distance_driver = rec.distance_empty + rec.distance_loaded
 
     @api.multi
     def action_draft(self):

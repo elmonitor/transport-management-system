@@ -4,13 +4,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 ##############################################################################
 
-from openerp import api, fields, models
-from openerp.exceptions import UserError
-from openerp.tools.translate import _
-
-import requests
-
-import simplejson as json
+from openerp import _, api, exceptions, fields, models
 
 
 class TmsRoute(models.Model):
@@ -32,6 +26,32 @@ class TmsRoute(models.Model):
     driver_factor_ids = fields.One2many(
         'tms.factor', 'route_id',
         string="Expense driver factor")
+    distance_loaded = fields.Float(
+        string='Distance Loaded (mi./km)'
+        )
+    distance_empty = fields.Float(
+        string='Distance Empty (mi./km)'
+        )
+
+    @api.depends('distance_empty', 'distance')
+    @api.onchange('distance_empty')
+    def on_change_disance_empty(self):
+        for rec in self:
+            if rec.distance_empty < 0.0:
+                raise exceptions.ValidationError(
+                    _("The value must be positive and lower than"
+                        " the distance route."))
+            rec.distance_loaded = rec.distance - rec.distance_empty
+
+    @api.depends('distance_loaded', 'distance')
+    @api.onchange('distance_loaded')
+    def on_change_disance_loaded(self):
+        for rec in self:
+            if rec.distance_loaded < 0.0:
+                raise exceptions.ValidationError(
+                    _("The value must be positive and lower than"
+                        " the distance route."))
+            rec.distance_empty = rec.distance - rec.distance_loaded
 
     @api.multi
     def get_route_info(self, error=False):
@@ -45,9 +65,11 @@ class TmsRoute(models.Model):
                 'longitude': rec.arrival_id.longitude
             }
             if not departure['latitude'] and not departure['longitude']:
-                raise UserError(_("The departure don't have coordinates."))
+                raise exceptions.UserError(_(
+                    "The departure don't have coordinates."))
             if not arrival['latitude'] and not arrival['longitude']:
-                raise UserError(_("The arrival don't have coordinates."))
+                raise exceptions.UserError(_(
+                    "The arrival don't have coordinates."))
             if error:
                 url = ''
             else:

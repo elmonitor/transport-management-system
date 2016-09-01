@@ -166,11 +166,11 @@
                                     <group>
                                         <separator string="Distances (mi./kms)"/>
                                         <newline/>
-                                        <!-- <field name="distance_route" readonly="1"/> -->
-                                        <field attrs="{'readonly':[('state','in',('done'))]}" name="distance_driver"/>
+                                        <field name="distance_route" readonly="1"/>
                                         <field attrs="{'readonly':[('state','in',('done'))]}" name="distance_loaded"/>
                                         <field attrs="{'readonly':[('state','in',('done'))]}" name="distance_empty"/>
-                                        <field attrs="{'readonly':[('state','in',('done'))]}" name="distance_extraction"/>
+                                        <field name="distance_driver"/>
+                                        <field attrs="{'readonly':[('state','in',('done'))]}" name="odometer"/>
                                     </group>
                                     <group>
                                         <separator colspan="4" string="Fuel Efficiency"/>
