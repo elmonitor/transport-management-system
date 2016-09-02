@@ -16,7 +16,7 @@ class TmsExpense(models.Model):
     base_id = fields.Many2one('tms.base', string='Base', required=True)
     employee_id = fields.Many2one(
         'hr.employee', 'Driver', required=True,
-        domain=[('tms_category', '=', 'driver')])
+        domain=[('driver', '=', True)])
     travel_ids = fields.Many2many(
         'tms.travel',
         string='Travels')
@@ -204,7 +204,7 @@ class TmsExpense(models.Model):
                     rec.amount_tax_total += (
                         fuel_log.tax_amount +
                         fuel_log.special_tax_amount)
-                if len(travel.waybill_ids) > 0:
+                if len(travel.waybill_ids.driver_factor_ids) > 0:
                     for waybill in travel.waybill_ids:
                         for waybill_factor in (
                                 waybill.driver_factor_ids):
