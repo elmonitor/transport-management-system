@@ -60,6 +60,7 @@
                             <field name="travel_time" widget="float_time"/>
                             <field name="distance_loaded"/>
                             <field name="distance_empty"/>
+                            <field name="fuel_efficiency"/>
                             <field name="active"/>
                         </group>
                     </sheet>

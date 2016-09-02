@@ -170,14 +170,14 @@
                                         <field attrs="{'readonly':[('state','in',('done'))]}" name="distance_loaded"/>
                                         <field attrs="{'readonly':[('state','in',('done'))]}" name="distance_empty"/>
                                         <field name="distance_driver"/>
-                                        <field name="odometer"/>
+                                        <field name="odometer" attrs="{'invisible':[('state','!=', 'done')]}"/>
                                     </group>
                                     <group>
                                         <separator colspan="4" string="Fuel Efficiency"/>
                                         <newline/>
                                         <field attrs="{'readonly':[('state','in',('done'))]}" name="fuel_efficiency_expected" readonly="1"/>
-                                        <field attrs="{'readonly':[('state','in',('done'))]}" name="fuel_efficiency_travel" readonly="1"/>
-                                        <field attrs="{'readonly':[('state','in',('done'))]}" name="fuel_efficiency_extraction" readonly="1"/>
+                                        <field attrs="{'readonly':[('state','in',('done'))]}" name="fuel_efficiency_travel"/>
+                                        <field name="fuel_efficiency_extraction"/>
                                     </group>
                                 </group>
                                 <separator colspan="4" string="Date and Times"/>

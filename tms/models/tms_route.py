@@ -21,7 +21,7 @@ class TmsRoute(models.Model):
     arrival_id = fields.Many2one('tms.place', 'Arrival', required=True)
     distance = fields.Float(
         'Distance (mi./kms)', digits=(14, 4),
-        help='Route distance (mi./kms)')
+        help='Route distance (mi./kms)', required=True)
     travel_time = fields.Float(
         'Travel Time (hrs)', digits=(14, 4),
         help='Route travel time (hours)')
@@ -31,11 +31,14 @@ class TmsRoute(models.Model):
         'tms.factor', 'route_id',
         string="Expense driver factor")
     distance_loaded = fields.Float(
-        string='Distance Loaded (mi./km)'
+        string='Distance Loaded (mi./km)',
+        required=True
         )
     distance_empty = fields.Float(
-        string='Distance Empty (mi./km)'
+        string='Distance Empty (mi./km)',
+        required=True
         )
+    fuel_efficiency = fields.Float(required=True)
 
     @api.depends('distance_empty', 'distance')
     @api.onchange('distance_empty')

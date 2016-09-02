@@ -5,6 +5,7 @@
 
 from openerp import _, api, fields, models
 from openerp.exceptions import ValidationError
+from datetime import datetime, timedelta
 
 
 class TmsTravel(models.Model):
@@ -29,18 +30,18 @@ class TmsTravel(models.Model):
         states={'cancel': [('readonly', True)],
                 'closed': [('readonly', True)]})
     travel_duration = fields.Float(
-        # compute=_compute_travel_duration,
+        compute='_compute_travel_duration',
         string='Duration Sched',
         help='Travel Scheduled duration in hours')
     travel_duration_real = fields.Float(
-        # compute=_travel_duration,
+        compute='_compute_travel_duration_real',
         string='Duration Real', help="Travel Real duration in hours")
     distance_route = fields.Float(
         related="route_id.distance",
         string='Route Distance (mi./km)')
     fuel_efficiency_expected = fields.Float(
-        # compute=_route_data,
-        string='Fuel Efficiency Expected')
+        string='Fuel Efficiency Expected',
+        related="route_id.fuel_efficiency")
     kit_id = fields.Many2one(
         'tms.unit.kit', 'Kit')
     unit_id = fields.Many2one(
@@ -67,7 +68,7 @@ class TmsTravel(models.Model):
         default=(fields.Datetime.now))
     date_end = fields.Datetime(
         'End Sched',
-        default=(fields.Datetime.now))
+        compute='_compute_date_end')
     date_start_real = fields.Datetime(
         'Start Real')
     date_end_real = fields.Datetime(
@@ -85,7 +86,8 @@ class TmsTravel(models.Model):
     fuel_efficiency_travel = fields.Float(
         'Fuel Efficiency Travel')
     fuel_efficiency_extraction = fields.Float(
-        'Fuel Efficiency Extraction')
+        compute='_compute_fuel_efficiency_extraction',
+        string='Fuel Efficiency Extraction')
     departure_id = fields.Many2one(
         'tms.place',
         related='route_id.departure_id',
@@ -110,6 +112,42 @@ class TmsTravel(models.Model):
         compute='_is_available',
         string='Travel available')
     base_id = fields.Many2one('tms.base', string='Base', required=True)
+
+    @api.depends('fuel_efficiency_expected', 'fuel_efficiency_travel')
+    def _compute_fuel_efficiency_extraction(self):
+        for rec in self:
+            rec.fuel_efficiency_extraction = (
+                rec.fuel_efficiency_expected - rec.fuel_efficiency_travel)
+
+    @api.depends('date_start')
+    def _compute_date_end(self):
+        for rec in self:
+            if rec.date_start:
+                strp_date = datetime.strptime(
+                    rec.date_start, "%Y-%m-%d %H:%M:%S")
+                rec.date_end = strp_date + timedelta(
+                    hours=rec.route_id.travel_time)
+
+    @api.depends('date_start', 'date_end')
+    def _compute_travel_duration(self):
+        for rec in self:
+            if rec.date_start and rec.date_end:
+                start_date = datetime.strptime(
+                    rec.date_start, "%Y-%m-%d %H:%M:%S")
+                end_date = datetime.strptime(rec.date_end, "%Y-%m-%d %H:%M:%S")
+                difference = (end_date - start_date).total_seconds() / 60 / 60
+                rec.travel_duration = difference
+
+    @api.depends('date_start_real', 'date_end_real')
+    def _compute_travel_duration_real(self):
+        for rec in self:
+            if rec.date_start_real and rec.date_end_real:
+                start_date = datetime.strptime(
+                    rec.date_start_real, "%Y-%m-%d %H:%M:%S")
+                end_date = datetime.strptime(
+                    rec.date_end_real, "%Y-%m-%d %H:%M:%S")
+                difference = (end_date - start_date).total_seconds() / 60 / 60
+                rec.travel_duration_real = difference
 
     @api.onchange('kit_id')
     def _onchange_kit(self):
