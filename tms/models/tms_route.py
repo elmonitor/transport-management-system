@@ -6,6 +6,10 @@
 
 from openerp import _, api, exceptions, fields, models
 
+import requests
+
+import simplejson as json
+
 
 class TmsRoute(models.Model):
     _name = 'tms.route'
@@ -95,7 +99,7 @@ class TmsRoute(models.Model):
                 self.distance = distance
                 self.travel_time = duration
             except:
-                raise UserError(_("Google Maps is not available."))
+                raise exceptions.UserError(_("Google Maps is not available."))
 
     @api.multi
     def open_in_google(self):
