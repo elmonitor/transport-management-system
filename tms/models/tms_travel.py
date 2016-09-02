@@ -113,11 +113,12 @@ class TmsTravel(models.Model):
 
     @api.onchange('kit_id')
     def _onchange_kit(self):
-        self.unit_id = self.kit_id.unit_id
-        self.trailer2_id = self.kit_id.trailer2_id
-        self.trailer1_id = self.kit_id.trailer1_id
-        self.dolly_id = self.kit_id.dolly_id
-        self.employee_id = self.kit_id.employee_id
+        for rec in self:
+            rec.unit_id = rec.kit_id.unit_id
+            rec.trailer2_id = rec.kit_id.trailer2_id
+            rec.trailer1_id = rec.kit_id.trailer1_id
+            rec.dolly_id = rec.kit_id.dolly_id
+            rec.employee_id = rec.kit_id.employee_id
 
     @api.onchange('route_id')
     def _onchange_route(self):
@@ -134,39 +135,53 @@ class TmsTravel(models.Model):
 
     @api.multi
     def action_draft(self):
-        self.state = "draft"
+        for rec in self:
+            rec.state = "draft"
 
     @api.multi
     def action_progress(self):
-        travels = self.search(
-            [('state', '=', 'progress'), '|',
-             ('employee_id', '=', self.employee_id.id),
-             ('unit_id', '=', self.unit_id.id)])
-        if len(travels) >= 1:
-            raise ValidationError(
-                _('The unit or driver are already in use!'))
-        self.state = "progress"
-        self.date_start_real = fields.Datetime.now()
-        self.message_post('Travel Dispatched')
+        for rec in self:
+            travels = rec.search(
+                [('state', '=', 'progress'), '|',
+                 ('employee_id', '=', rec.employee_id.id),
+                 ('unit_id', '=', rec.unit_id.id)])
+            if len(travels) >= 1:
+                raise ValidationError(
+                    _('The unit or driver are already in use!'))
+            rec.state = "progress"
+            rec.date_start_real = fields.Datetime.now()
+            rec.message_post('Travel Dispatched')
 
     @api.multi
     def action_done(self):
-        self.state = "done"
-        self.date_end_real = fields.Datetime.now()
-        self.message_post('Travel Finished')
+        for rec in self:
+            odometer = self.env['fleet.vehicle.odometer'].create({
+                'travel_id': rec.id,
+                'vehicle_id': rec.unit_id.id,
+                'last_odometer': rec.unit_id.odometer,
+                'distance': rec.distance_driver,
+                'current_odometer': rec.unit_id.odometer + rec.distance_driver,
+                'value': rec.unit_id.odometer + rec.distance_driver
+                })
+            rec.state = "done"
+            rec.odometer = odometer.current_odometer
+            rec.date_end_real = fields.Datetime.now()
+            rec.message_post('Travel Finished')
 
     @api.multi
     def action_cancel(self):
-        advances = self.search([
-            '|',
-            ('fuel_log_ids', '!=', 'cancel'),
-            ('advance_ids', '!=', 'cancel')])
-        if len(advances) >= 1:
-            raise ValidationError(
-                _('If you want to cancel this travel, you must cancel the fuel'
-                  ' logs or the advances attached to this travel'))
-        self.state = "cancel"
-        self.message_post('Travel Cancelled')
+        for rec in self:
+            advances = rec.search([
+                '|',
+                ('fuel_log_ids', '!=', 'cancel'),
+                ('advance_ids', '!=', 'cancel')])
+            if len(advances) >= 1:
+                raise ValidationError(
+                    _('If you want to cancel this travel,'
+                      ' you must cancel the fuel logs or the advances '
+                      'attached to this travel'))
+            rec.state = "cancel"
+            rec.message_post('Travel Cancelled')
 
     @api.model
     def create(self, values):
@@ -177,26 +192,27 @@ class TmsTravel(models.Model):
 
     @api.depends()
     def _is_available(self):
-        models = ['tms.advance', 'fleet.vehicle.log.fuel', 'tms.waybill']
-        advances = len(self.advance_ids)
-        fuel_vehicle = len(self.fuel_log_ids)
-        count = 0
-        for model in models:
-            if model == 'tms.advance' or model == 'fleet.vehicle.log.fuel':
-                object_ok = len(self.env[model].search(
-                    [('state', '=', 'confirmed'),
-                     ('travel_id', '=', self.id)]))
-                if (model == 'tms.advance' and
-                        advances == object_ok or advances == 0):
-                    count += 1
-                elif (model == 'fleet.vehicle.log.fuel' and
-                        fuel_vehicle == object_ok or fuel_vehicle == 0):
-                    count += 1
-            if model == 'tms.waybill':
-                object_ok = len(self.env[model].search(
-                    [('state', '=', 'confirmed'),
-                     ('travel_ids', 'in', self.id)]))
-                if len(self.waybill_ids) == object_ok:
-                    count += 1
-        if count == 3:
-            self.is_available = True
+        for rec in self:
+            models = ['tms.advance', 'fleet.vehicle.log.fuel', 'tms.waybill']
+            advances = len(rec.advance_ids)
+            fuel_vehicle = len(rec.fuel_log_ids)
+            count = 0
+            for model in models:
+                if model == 'tms.advance' or model == 'fleet.vehicle.log.fuel':
+                    object_ok = len(rec.env[model].search(
+                        [('state', '=', 'confirmed'),
+                         ('travel_id', '=', rec.id)]))
+                    if (model == 'tms.advance' and
+                            advances == object_ok or advances == 0):
+                        count += 1
+                    elif (model == 'fleet.vehicle.log.fuel' and
+                            fuel_vehicle == object_ok or fuel_vehicle == 0):
+                        count += 1
+                if model == 'tms.waybill':
+                    object_ok = len(rec.env[model].search(
+                        [('state', '=', 'confirmed'),
+                         ('travel_ids', 'in', rec.id)]))
+                    if len(rec.waybill_ids) == object_ok:
+                        count += 1
+            if count == 3:
+                rec.is_available = True
