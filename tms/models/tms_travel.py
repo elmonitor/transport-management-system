@@ -111,7 +111,8 @@ class TmsTravel(models.Model):
     is_available = fields.Boolean(
         compute='_compute_is_available',
         string='Travel available')
-    base_id = fields.Many2one('tms.base', 'Base')
+    base_id = fields.Many2one(
+        'tms.base', 'Base', required="True")
     color = fields.Integer()
     framework = fields.Selection([
         ('unit', 'Unit'),

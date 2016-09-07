@@ -26,18 +26,21 @@
                          <group>
                             <field name="travel_id" domain="[('expense_id', '=', expense_id)]"/>
                             <field name="line_type"/>
-                            <field name="product_id"/>
+                            <field name="product_id" attrs="{'invisible':[('line_type','not in',('real_expense'))],'required':[('line_type', 'in', 'real_expense')]}"/>
+                            <field name="expense_id" invisible="1"/>
                         </group>
                         <group>
                             <group string="Product Details">
-                                <field attrs="{'invisible':[('line_type','not in',('real_expense'))]}" name="product_uom_id"/>
-                                <field attrs="{'invisible':[('line_type','not in',('real_expense'))]}" name="product_uom_qty"/>
-                                <field attrs="{'invisible':[('line_type','not in',('real_expense'))]}" name="price_unit_control"/>
-                                <field attrs="{'invisible':[('line_type','not in',('real_expense'))]}" name="price_subtotal"/>
-                                <field name="tax_amount"/>
+                                <field attrs="{'invisible':[('line_type','not in',('real_expense'))],'required':[('line_type', 'in', 'real_expense')]}" name="product_uom_id"/>
+                                <field attrs="{'invisible':[('line_type','not in',('real_expense'))],'required':[('line_type', 'in', 'real_expense')]}" name="product_uom_qty"/>
+                                <field attrs="{'invisible':[('line_type','not in',('real_expense'))],'required':[('line_type', 'in', 'real_expense')]}" name="price_unit_control"/>
+                                <field attrs="{'invisible':[('line_type','not in',('real_expense'))],'required':[('line_type', 'in', 'real_expense')]}" name="price_subtotal"/>
+                                <field name="tax_amount" readonly="1"/>
                                 <field name="price_total"/>
                             </group>
                             <group string="Supplier Details">
+                                <field name='partner_id'/>
+                                <field name='invoice_id' domain="[('partner_id', '=', partner_id)]"/>
                                 <field name="name"/>
                                 <field attrs="{'invisible':[('line_type','not in',('real_expense'))]}" name="is_invoice"/>
                                 <field attrs="{'invisible':[('line_type','not in',('real_expense'))]}" name="invoice_number"/>

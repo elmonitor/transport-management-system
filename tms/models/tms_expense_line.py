@@ -3,7 +3,7 @@
 # © <2016> <Jarsa Sistemas, S.A. de C.V.>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from openerp import api, fields, models
+from openerp import _, api, fields, models, ValidationError
 
 
 class TmsExpenseLine(models.Model):
@@ -69,13 +69,13 @@ class TmsExpenseLine(models.Model):
         help="Check this if you want to create Fuel Vouchers for "
         "this line")
     is_invoice = fields.Boolean(string='Is Invoice?')
-    partner_id = fields.Many2one('res.partner', string='Supplier')
+    partner_id = fields.Many2one(
+        'res.partner', string='Supplier')
     invoice_date = fields.Date('Date')
     invoice_number = fields.Char()
     invoice_id = fields.Many2one(
         'account.invoice',
-        string='Supplier Invoice',
-        readonly=True)
+        string='Supplier Invoice')
     product_id = fields.Many2one(
         'product.product',
         domain=[('type', '=', 'service'),
@@ -94,6 +94,11 @@ class TmsExpenseLine(models.Model):
             rec.price_subtotal = subtotal
             rec.tax_amount = total_discount
 
-    @api.multi
-    def unlink(self):
-        return super(TmsExpenseLine, self).unlink()
+    @api.model
+    def create(self, values):
+        expense_line = super(TmsExpenseLine, self).create(values)
+        if expense_line.line_type in ('salary_discount', 'negative_balance'):
+            if expense_line.price_total > 0:
+                raise ValidationError(_('This line type needs a '
+                                        'negative value to continue!'))
+        return expense_line

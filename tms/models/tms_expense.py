@@ -197,13 +197,6 @@ class TmsExpense(models.Model):
                                      rec.amount_total_real)
             rec.amount_balance = (rec.amount_total_real -
                                   rec.amount_advance)
-            for discount in rec.expense_line_ids:
-                if discount.line_type == 'madeup_expense':
-                    rec.amount_madeup_expense = discount.price_total
-                if discount.line_type == 'salary_discount':
-                    rec.amount_salary_discount += discount.price_total
-                    rec.amount_salary = (rec.amount_salary -
-                                         discount.price_total)
 
     @api.multi
     def get_travel_info(self):
@@ -283,6 +276,13 @@ class TmsExpense(models.Model):
                     'price_total': rec.amount_salary,
                     'base_id': travel.base_id.id
                 })
+            for discount in rec.expense_line_ids:
+                if discount.line_type == 'salary_discount':
+                    rec.amount_salary_discount += discount.price_total
+                if discount.line_type == 'madeup_expense':
+                    rec.amount_madeup_expense += discount.price_total
+                if discount.line_type == 'real_expense':
+                    rec.amount_real_expense += discount.price_total
 
     @api.model
     def create(self, values):
@@ -368,4 +368,12 @@ class TmsExpense(models.Model):
 
     @api.multi
     def action_cancel(self):
+        for rec in self:
+            message = _('<b>Expense Cancelled.</b></br><ul>'
+                        '<li><b>Cancelled by: </b>%s</li>'
+                        '<li><b>Cancelled at: </b>%s</li>'
+                        '</ul>') % (
+                            self.env.user.name,
+                            fields.Datetime.now())
+            rec.message_post(body=message)
         self.state = 'cancel'
