@@ -23,7 +23,7 @@
 #
 ##############################################################################
 
-from osv import osv, fields
+from openerp.osv import osv, fields
 import time
 import dateutil
 import dateutil.parser
